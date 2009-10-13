@@ -3104,7 +3104,7 @@ get_repo_data()
 		REPO_FILE_ID='apt sources'
 	elif [[ -d $yum_repo_dir ]];then
 		for repo_file in $( ls $yum_repo_dir )
-		do
+		do2>/dev/nullo
 			repo_data_working="$( gawk -v repoFile=$repo_file '
 			BEGIN {
 			FS="\n"
@@ -4559,4 +4559,4 @@ print_system_data()
 main $@ ## From the End comes the Beginning
 
 ## note: this EOF is needed for smxi handling, this is what triggers the full download ok
-###**EOF**###
+###**EO
