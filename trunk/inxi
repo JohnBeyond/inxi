@@ -1,7 +1,7 @@
 #!/bin/bash
 ########################################################################
 ####  Script Name: inxi
-####  version: 1.2.3
+####  version: 1.2.4
 ####  Date: October 13 2009
 ########################################################################
 ####  SPECIAL THANKS
@@ -3098,15 +3098,19 @@ get_repo_data()
 {
 	local repo_file='' repo_data_working='' 
 	local apt_file='/etc/apt/sources.list' yum_repo_dir='/etc/yum.repos.d/'
-	
+
 	if [[ -f $apt_file || -d $apt_file.d ]];then
 		REPO_DATA="$( grep -Esv '(^[[:space:]]*$|^[[:space:]]*#)' $apt_file $apt_file.d/*.list )"
 		REPO_FILE_ID='apt sources'
 	elif [[ -d $yum_repo_dir ]];then
-		for repo_file in $( ls $yum_repo_dir )
-		do2>/dev/nullo
+		# older redhats put their yum data in /etc/yum.conf
+		for repo_file in $( ls $yum_repo_dir*.repo /etc/yum.conf 2>/dev/null )
+		do
 			repo_data_working="$( gawk -v repoFile=$repo_file '
-			BEGIN {
+onstruct the string for the print function to work with, file name: data
+					# dofunction print_line( fileName, repoId, repoUrl ){
+				print fileName ":" repoId repoUrl
+			}GIN {
 			FS="\n	FS="\n"
 				IGNORECASE=1
 				enabledStatus=""
@@ -3116,8 +3120,16 @@ get_repo_data()
 			# this is a hack, assuming that each item has these fields listed, we collect the 3
 			# items one by one, then when the url/enabled fields are set, we print it out and
 			# reset the data. Not elegant but it works.
+			/^ Note that if enabled was not present
+			# we assume it is enabled then, and print the line, reset the variables. This will
+			# miss the last item, so it is printed if found in END
 			/^\[.+\]/ {
-				gsub( /\[|\]/, "", $1 ) # strip out the brackets
+				if ( urlData != "" && repoTitle != "" ){
+					print_line( repoFile, repoTitle, urlData )
+					enabledStatus=""
+					urlData=""
+					repoTitle=""
+				}sub( /\[|\]/, "", $1 ) # strip out the brackets
 				repoTitle = $1 " ~ "
 			}
 			/^(mirrorlist|baseurl)/ {
@@ -3128,18 +3140,22 @@ get_repo_data()
 				enabledStatus = $1
 			}
 			
-			{ 
+			{ # print out the line if all 3 values are found, otherwise if a new
+			# repoTitle is hit above, it will print out the line there instead
 				if ( urlData != "" && enabledStatus != "" ){
 			&& repoTitle ){
-					# construct the string for the print function to work with, file name: data
-					# do not print if enabled=0 since it is not active then
-					if ( enabledStatus !~ /enabled=0/ ){
-						print repoFile ":" repoTitle urlData
+					# consif ( enabledStatus !~ /enabled=0/ ){
+						print_line( repoFile, repoTitle, urlData )
 					}
 					enabledStatus=""
 					urlData=""
 					repoTitle=""
 				}
+			}
+			END {
+				# print the last one if there is data for it
+				if ( urlData != ""  && repoTitle != "" ){
+					print_line( repoFile, repoTitle, urlData )
 			}
 			' $yum_repo_dir$repo_file )"
 			
