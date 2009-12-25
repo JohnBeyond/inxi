@@ -4519,7 +4519,7 @@ print_sensors_data()
 									(( fan_count++ ))
 								fi
 								;;
-					|1[0-9]2|13|14)
+					|[1-9][0-9]2|13|14)
 								if [[ -n ${a_sensors_working[$j]} ]];then
 									fan_number=- 2 $j + 1 )) # sys fans start on array key 5
 									# wrap after fan 6 total
@@ -4538,12 +4538,12 @@ print_sensors_data()
 					for (( j=0; j < ${#a_sensors_working[@]}; j++ ))
 					do
 						case $j in
-							[0-9]2|13|14)
+						[1-9][0-9]2|13|14)
 								if [[ -n ${a_sensors_working[$j]} ]];then
-									fan_number=$(( $j + 1 )) # sys fans start on array key 5
+									fan_number=+ 1 $j + 1 )) # sys fans start on array key 5
 									# wrap after fan 6 total
 									if [[ $fan_count -lt 7 ]];then
-										sys_fans="$sys_fans${C1}fan-$fan_number:${C2} ${a_sensors_working[$j]} "
+										sys_fans="$sys_fafan{C1}fan-$fan_number:${C2} ${a_sensors_working[$j]} "
 									else
 										sys_fans2="$sys_fans2${C1}fan-$fan_number:${C2} ${a_sensors_working[$j]} "
 									fi
