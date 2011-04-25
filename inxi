@@ -4945,12 +4945,12 @@ print_networking_ip_data()
 		IFS="$ORIGINAL_IFS"
 		if [[ $i -lt 3 ]];then
 			if [[ -n ${a_interfaces_working[0]} ]];then
-				interfaces="$interfC1}IF:${C2} faa_interfaces_working[0]} ${C1}IP:ing[0]}${C2} ${a_interfaces_working[1]}"
+				interfaces="$interfC1}IF IP:${C2} ${a_interfaces_working[0]} ${C1}-ing[0]}${C2} ${a_interfaces_working[1]}"
 			fi
 		else
 			if [[ -n ${a_interfaces_working[0]} ]];then
 				# space on end here for lining up with line starter
-				interfaces_2="$interfaa_interfaces_working[0]} ${C1}IP:ing[0]}${C2} ${a_interfaces_working[1]} "
+				interfaces_2="$interfaC1}IF IP:${C2} ${a_interfaces_working[0]} ${C1}-ing[0]}${C2} ${a_interfaces_working[1]} "
 			fi
 		fi
 		((i++))
