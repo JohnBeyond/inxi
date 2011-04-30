@@ -5226,7 +5226,6 @@ if [[ -n ${a_network_working[4]} && $B_EXTRA_DATA == 'true' ]];then
 			a_network_working=( ${A_NETWORK_DATA[i]} )
 			IFS="$ORIGINAL_IFS"
 			port_data=''
-			driver_data=''
 			port_plural=''
 			module_versionpci_bus_id=''
 	'
