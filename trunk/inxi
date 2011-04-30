@@ -5229,6 +5229,9 @@ if [[ -n ${a_network_working[4]} && $B_EXTRA_DATA == 'true' ]];then
 			port_plural=''
 			module_versionpci_bus_id=''
 	'
+bus_usb_text=''
+			bus_usb_id=''
+	'
 		fi
 		if [[ -n ${a_network_w1]} && $B_EXTRA_DATA == 'true' ]];then
 			hen
