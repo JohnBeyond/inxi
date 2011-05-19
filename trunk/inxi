@@ -2655,7 +2655,7 @@ detect_desktop_environment()
 			fi
 		fi
 		# a few manual hacks for things that don't id with xprop, these are just good guesses
-		if [[ -z $desktop_environment ]];then
+		if [[ $desktop_environment == 'N/A' ]];then
 			if [[ -n $( grep -is 'fvwm-crystal'  <<< "$ps_aux" | grep -v 'grep' ) ]];then
 				version=$( fvwm --version 2>/dev/null | grep -Esi 'fvwm [[:digit:]]' | gawk '{print $2}' )
 				if [[ -n $version ]];then
@@ -6015,7 +6015,7 @@ print_sensors_data()
 									cpu_fan='N/A'
 								fi
 								cpu_fan="${C1}Fan Speeds (in rpm): cpu:${C2} $cpu_fan "
-								(( fan_c))
+								((unt++ ))
 								;;
 							1)
 								if [[ -n ${a_sensors_working[1]} ]];then
