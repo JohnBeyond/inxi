@@ -2557,14 +2557,16 @@ detect_desktop_environment()
 			version=" $version"
 		fi
 		# this is a hack, and has to be changed with every toolkit version change
-		toolkit=$( pkg-config --modversion gtk+-2.0 2>/dev/null )
+		toolkit=$( pkg-config --modversion gtk+-3.0 2>/dev/null )
+		if [[ -z $toolkit ]];then
+			toolkit=$( pkg-config --modversion gtk+-2.0 2>/dev/null )
+		fi
 		if [[ -n $toolkit ]];then
 			version="$version (Gtk: $toolkit)"
 		fi
 		desktop_environment="Gnome${version}"
 	# assume 5 will id the same, why not, no need to update in future
 	elif [[ $KDE_SESSION_VERSION == '5' ]]; then
-		desktop_environment='KDE 5'
 		version_data=$( kded5 --version 2>/dev/null )
 		version=$( grep -si '^KDE Development Platform:' <<< "$version_data" | gawk '{print $4}' )
 		if [[ -z $version ]];then
@@ -6012,10 +6014,11 @@ print_sensors_data()
 								;;
 							1)
 								if [[ -n ${a_sensors_working[1]} ]];then
-									mobo_fan="${C1}mobo:${C2} ${a_sensors_working[1]} "
+									mobo_fan="${C1}mobo:${C2} ${a__working[1]} "
 									(( fan_count++ ))
 								fi
-											2)
+								;;
+							2)
 								if [[ -n ${a_sensors_working[2]} ]];then
 									ps_fan="${C1}psu:${C2} ${a_sensors_working[2]} "
 									(( fan_count++ ))
