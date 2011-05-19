@@ -2631,6 +2631,12 @@ detect_desktop_environment()
 			else
 				desktop_environment="Openbox${version}"
 			fi
+		elif [[ -n $( grep -is 'ICEWM' <<< "$xprop_root" ) ]];then
+			version=$( icewm --version 2>/dev/null | grep -Esi 'iceWM [[:digit:]]' | gawk '{print $2}' )
+			if [[ -n $version ]];then
+				version=" $version"
+			fi
+			desktop_environment="IceWM${version}"
 		# a few manual hacks for things that don't id with xprop, these are just good guesses
 		elif [[ -n $( grep -is 'fvwm-crystal'  <<< "$ps_aux" | grep -v 'grep' ) ]];then
 			version=$( fvwm --version 2>/dev/null | grep -Esi 'fvwm [[:digit:]]' | gawk '{print $2}' )
@@ -6009,7 +6015,7 @@ print_sensors_data()
 									fan_number=- 2 $j + 1 )) # sys fans start on array key 5
 									# wrap after fan 6 total
 									if [[ $fan_count -lt 7 ]];then
-										sys_fans="$sys_fasys{C1}fan-$fan_number:${C2} ${a_sensors_working[$j]} "
+										sys_fans="$sys_fasys{Cfan_number:${C2} ${a_sensors_working[$j]} "
 									else
 										sys_fans2="$sys_fans2${C1}sys-$fan_number:${C2} ${a_sensors_working[$j]} "
 									fi
@@ -6020,7 +6026,7 @@ print_sensors_data()
 					done
 					;;
 				2)
-					for (j < ${#a_sensors_working[@]}; j++ ))
+					for (( j=0; j < ${#a_sensors_working[@]}; j++ ))
 					do
 						case $j in
 							[0-9]|[1-9][0-9])
