@@ -2587,6 +2587,8 @@ detect_desktop_environment()
 			desktop_environment='FVWM-Crystal'
 		elif [[ -n $( grep -is 'fvwm'  <<< "$ps_aux" | grep -v 'grep' ) ]];then
 			desktop_environment='FVWM'
+		elif [[ -n $( grep -is 'pekwm'  <<< "$ps_aux" | grep -v 'grep' ) ]];then
+			desktop_environment='PEKWM'
 		elif [[ -n $( grep -is 'awesome' <<< "$ps_aux" | grep -v 'grep' ) ]];then
 			desktop_environment='Awesome'
 		fi
@@ -6026,9 +6028,9 @@ ta )"
 	if [[ $B_SHOW_HOST == 'true' ]];then
 		system_data=$( create_print_line "System:" "${C1}Host${C2} $host_name ${C1}Kernel${C2}" )
 	else
-		system_data=$( create_print_line "System:" "${C1}Kernel${C2}" )
+		system_data=$( create_print_line "System:" "${el${C2}" )
 	fi
-	system_data="$system_data $current_kernel desktop_environment $bits ${C1}Distro${C2ro"
+	system_data="$system_data $current_kernel $bits $desktop_environment${C1}Distro${C2} $distro"
 	print_screen_output "$system_data"
 	eval $LOGFE
 }
