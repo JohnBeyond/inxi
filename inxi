@@ -2682,7 +2682,11 @@ detect_desktop_environment()
 				fi
 				desktop_environment="pekwm${version}"
 			elif [[ -n $( grep -is 'awesome' <<< "$ps_aux" | grep -v 'grep' ) ]];then
-				desktop_environment="Awesome"
+				version=$( awesome --version 2>/dev/null | grep -Esi 'awesome ([[:digit:]]|GIT)' | gawk '{print $2}' )
+				if [[ -n $version ]];then
+					version=" $version"
+				fi
+				desktop_environment="Awesome${version}"
 			fi
 		fi
 	fi
@@ -6008,7 +6012,7 @@ print_sensors_data()
 						gpu_temp=$( cut -d ':' -f 2 <<< $gpu_temp )
 					fi_data )
 					if [[ -n $gpu_temp ]];then
-						gpu_temp="${C1}gpu:${C2} ${gpu_temp} "
+						gpu_temp="${C1}g} ${gpu_temp} "
 					fi
 					;;
 				# then the fan data from main fan array
@@ -6017,7 +6021,7 @@ print_sensors_data()
 					do
 						case $j in
 							0)
-	# we need to make sure it's either cpu fan OR cpu fan and sys fan 1
+								# we need to make sure it's either cpu fan OR cpu fan and sys fan 1
 								if [[ -n ${a_sensors_working[0]} ]];then
 									cpu_fan="${a_sensors_working[0]}"
 								elif [[ -z ${a_sensors_working[0]} && -n ${a_sensors_working[1]} ]];then
