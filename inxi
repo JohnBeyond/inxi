@@ -2002,6 +2002,7 @@ get_start_client()
 						IRC_CLIENT='Konversation'
 						IRC_CLIENT_VERSION=" $( konversation --version 2>/dev/null | gawk '/^Konversation/ {print $2}' )"
 						B_CONSOLE_IRC='false'
+						KONVI=3
 					else
 						IRC_CLIENT="Unknown Perl client"
 					fi
@@ -6018,9 +6019,8 @@ print_sensors_data()
 					else
 						mobo_temp='N/A'
 					fi
-					mobo_temp="${C1}mobo:${C2} $mobo_temp "
-
-					n ${a_sensors_working[2]} ]];then
+					mobo_temp="${C1}mobo:${C2} $mobo_
+					if [[ -n ${a_sensors_working[2]} ]];then
 						psu_temp="${C1}psu:${C2} ${a_sensors_working[2]} "
 					fi
 					gpu_temp=$( get_gpu_temp_data )
