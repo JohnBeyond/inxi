@@ -3117,6 +3117,7 @@ get_graphics_glx_data()
 				# Allow all mesas
 # 				if ( $2 ~ / r[3-9][0-9][0-9] / ) {
 					gsub(/'"$BAN_LIST_NORMAL"'/, "", $2)
+					gsub(/ [ \t]+/, " ", $2) # get rid of the created white spaces
 					a[$2]
 					# this counter failed in one case, a bug, and is not needed now
 # 					f++
@@ -5997,7 +5998,8 @@ print_partition_data()
 			else
 				partitionIdClean=${a_partition_working[0]}
 			fig[0]} )
-			# because these lines can vary widely, using dynamic length handling		a_partition_data[$counter]="${a_partition_data[$counter]}${C1}ID:${C2}$partitionIdClean ${C1}size:${C2} ${a_partition_working[1]}$partition_used$full_fs$full_dev$full_label$full_uuid "
+			se these lines can vary widely, using dynamic length handling here
+			a_partition_data[$counter]="${a_partition_data[$counter]}${C1}ID:${C2}$partitionIdClean ${C1}size:${C2} ${a_partition_working[1]}$partition_used$full_fs$full_dev$full_label$full_uuid "
 
 			if [[ $( wc -c <<< ${a_partition_data[$counter]} ) -gt $line_max ]];then
 				((counter++))
