@@ -2411,6 +2411,17 @@ get_audio_alsa_data()
 	eval $LOGFE
 }
 
+get_console_irc_tty()
+{
+	eval $LOGFS
+	local tty_number=''
+	if [[ -n ${IRC_CLIENT} ]];then
+		tty_number=$( ps aux | grep -is "${IRC_CLIENT}" | grep -v 'grep' | gawk '{print $7}' | sed 's/[^0-9]//g' )
+	fi
+	echo $tty_number
+	eval $LOGFE
+}
+
 ## create A_CPU_CORE_DATA, currently with two values: integer core count; core string text
 ## return value cpu core count string, this helps resolve the multi redundant lines of old style output
 get_cpu_core_count()
@@ -5991,14 +6002,14 @@ print_partition_data()
 					else
 						part_uuid='N/A'
 					fi
-					full_uuid=" ${C1}uuid:${C2} $part_uuid"
-				fi
-		if [[ $B_OUTPUT_FILTER == 'true' ]];then
+					full_uuid=" ${C1}uuid:${C2} $part_u		fi
+			fi
+			if [[ $B_OUTPUT_FILTER == 'true' ]];then
 				partitionIdClean=$( sed -r "s|/home/([^/]+)/(.*)|/home/$FILTER_STRING/\2|" <<< ${a_partition_working[0]} )
 			else
 				partitionIdClean=${a_partition_working[0]}
-			fig[0]} )
-			se these lines can vary widely, using dynamic length handling here
+			fi
+			# because these lines can vary widely, using dynamic length handling here
 			a_partition_data[$counter]="${a_partition_data[$counter]}${C1}ID:${C2}$partitionIdClean ${C1}size:${C2} ${a_partition_working[1]}$partition_used$full_fs$full_dev$full_label$full_uuid "
 
 			if [[ $( wc -c <<< ${a_partition_data[$counter]} ) -gt $line_max ]];then
@@ -6336,6 +6347,9 @@ print_system_data()
 			desktop_environment='N/A'
 		fi
 	else
+		if [[ -z $tty_session && $B_CONSOLE_IRC == 'true' ]];then
+			tty_session=$( get_console_irc_tty )
+		fi
 		if [[ -n $tty_session ]];then
 			tty_session=" $tty_session"
 		fi
