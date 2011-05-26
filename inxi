@@ -1768,7 +1768,7 @@ show_options()
 	print_screen_output "    96 - Gui IRC, running in X - like Xchat, Quassel, Konversation etc."
 	print_screen_output "    97 - Console IRC running in X - like irssi in xTerm)"
 	print_screen_output "    98 - Console IRC not in  X"
-	print_screen_output "    99 (global)"
+	print_screen_output "    99 - Global - Overrides/removes specific settings. Setting specific after setting global removes global."
 	print_screen_output "-C  Show full CPU output, including per CPU clockspeed."
 	print_screen_output "-d  Default output verbosity level, same as: $SCRIPT_NAME -v 1"
 	print_screen_output "-D  Show full hard Disk info, not only model, ie: /dev/sda ST380817AS 80.0GB."
@@ -5951,10 +5951,10 @@ print_networking_ip_data()
 			ip=$FILTER_STRING
 		fi
 	fiunction
-	ip_data=$( create_print_line " " "${C1}Wan IP:${C2} $ip" )
+	ip_data=$( create_ine " " "${C1}Wan IP:${C2} $ip" )
 
-	# then create the list of local interfacC2}"
-	i=0  starts with 1 by auto-increment so it only shows cards > 1
+	# then create the list of local interface/ip
+	i=0 ## loop starts with 1 by auto-increment so it only shows cards > 1
 	while [[ -n ${A_INTERFACES_DATA[i]} ]]
 	do
 		IFS=","
