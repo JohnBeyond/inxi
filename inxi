@@ -2844,9 +2844,15 @@ get_desktop_environment()
 # args: $1 - desktop command for --version; $2 - search string; $3 - gawk print number
 get_de_version()
 {
-	local version=''
+	local version='' get_version='--version'
 	
- 	version=$( $1 --version 2>/dev/null | gawk '
+	case $1 in
+		dwm|wmii)
+			get_version='-v'
+			;;
+	esac
+	
+ 	version=$( $1 $get_version 2>/dev/null | gawk '
 	BEGIN {
 		IGNORECASE=1
 	}
@@ -5962,9 +5968,9 @@ print_networking_ip_data()
 		((i++))
 	done
 	print_screen_output "$ip_data$interfaces"
-	# then wrap it if needed
+	# th it if needed
 	if [[ -n $interfaces_2 ]];then
-		interfaces_2=$( create_print_l "$interfaces_2" )
+		interfaces_2=$( create_print_line " " "$interfaces_2" )
 		print_screen_output "$interfaces_2"
 	fi
 	eval $LOGFE
