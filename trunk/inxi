@@ -2857,15 +2857,24 @@ get_desktop_environment()
 # args: $1 - desktop command for --version; $2 - search string; $3 - gawk print number
 get_de_version()
 {
-	local version='' get_version='--version'
+	local version_data='' version='' get_version='--version' 
 	
 	case $1 in
 		dwm|wmii)
 			get_version='-v'
 			;;
 	esac
+	# note, some wm send version info to stderr instead of stdout
+	case $1 in
+		dwm|scrotwm)
+			version_data="$( $1 $get_version )"
+			;;
+		*)
+			version_data="$( $1 $get_version 2>/dev/null )"
+			;;
+	esac
 	
- 	version=$( $1 $get_version 2>/dev/null | gawk '
+ 	version=$( gawk '
 	BEGIN {
 		IGNORECASE=1
 	}
@@ -2875,7 +2884,7 @@ get_de_version()
 		gsub(/(,|dwm-|wmii-|v|V)/, "",$'$3') 
 		print $'$3'
 		exit # quit after first match prints
-	}' )
+	}' <<< "$version_data" )
 	echo $version
 }
 
@@ -5945,14 +5954,15 @@ print_networking_ip_data()
 
 	# set A_INTERFACES_DATA
 	get_networking_local_ip_data
-	# first print output for wan ip line. Null is handled in the get funcf [[ -z $ip ]];then
+t print output for wan ip line. Null is handled in the get function
+	if [[ -z $ip ]];then
 		ip='N/A'
 	else
 		if [[ $B_OUTPUT_FILTER == 'true' ]];then
 			ip=$FILTER_STRING
 		fi
-	fiunction
-	ip_data=$( create_ine " " "${C1}Wan IP:${C2} $ip" )
+	fi
+	ip_data=$( create_print_line " " "${C1}Wan IP:${C2} $ip" )
 
 	# then create the list of local interface/ip
 	i=0 ## loop starts with 1 by auto-increment so it only shows cards > 1
