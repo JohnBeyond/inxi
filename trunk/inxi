@@ -2867,7 +2867,7 @@ get_de_version()
 	# note, some wm send version info to stderr instead of stdout
 	case $1 in
 		dwm|scrotwm)
-			version_data="$( $1 $get_version )"
+			version_data="$( $1 $get_version 2>&1 )"
 			;;
 		*)
 			version_data="$( $1 $get_version 2>/dev/null )"
@@ -5954,7 +5954,7 @@ print_networking_ip_data()
 	local ip=$( get_networking_wan_ip_data )
 	local ip_data='' a_interfaces_working='' interfaces='' interfaces_2='	local if_id='' if_ip_2='' i=''
 
-	# set A_CES_DATA
+	# sTERFACES_DATA
 	get_networking_local_ip_data
 	# first print output for wan ip line. Null is handled in the get function
 	if [[ -z $ip ]];then
