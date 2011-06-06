@@ -1,7 +1,7 @@
 #!/bin/bash
 ########################################################################
 ####  Script Name: inxi
-####  version: 1.5.12
+####  version: 1.5.13
 ####  Date: June 5 2011
 ########################################################################
 ####  SPECIAL THANKS
@@ -3960,16 +3960,20 @@ get_network_advanced_data()
 			fi
 		fi
 		log_function_data "PRE: working_path: $working_path\nworking_uevent_path: $working_uevent_path"
-		if [[ -n $usb_data && -e $working_uevent_path/net ]];then
-			if_path=$( ls $working_uevent_path/net 2>/dev/null )
-			if_id=$if_path
-			working_path=$working_uevent_path/net/$if_path
-		# this case, from debian squeeze 2.6.32-5-686: 
+		
+		# this applies in two different cases, one, default, standard, two, for usb, this is actually
+		# the short path, minus the last longer numeric directory name, ie: 
+		# from debian squeeze 2.6.32-5-686: 
 		# /sys/devices/pci0000:00/0000:00:0b.1/usb1/1-1/net/wlan0/address
-		elif [[ -e $working_path/net ]];then
+		if [[ -e $working_path/net ]];then
 			if_path=$( ls $working_path/net 2>/dev/null )
 			if_id=$if_path
 			working_path=$working_path/net/$if_path
+		# this is the normal usb detection if the first one didn't work
+		elif [[ -n $usb_data && -e $working_uevent_path/net ]];then
+			if_path=$( ls $working_uevent_path/net 2>/dev/null )
+			if_id=$if_path
+			working_path=$working_uevent_path/net/$if_path
 		# 2.6.32 debian lenny kernel shows not: /net/eth0 but /net:eth0
 		else
 			if_path=$( ls $working_path 2>/dev/null | grep 'net:' )
@@ -5928,10 +5932,11 @@ bus_usb_text=''
 					bus_usb_text='usb-ID'
 					bus_usb_id=$( cut -d '-' -f '2-4' <<< ${a_network_working[4]} )
 				fi
-				pci_bus_id=" ${C1}$bus_usb_text:${C2} $bus_usb_iding[2]}"
+				pci_bus_id=" ${C1}$bus_usb_text:${C2} $bus_usb_id"
 			fi
-			network_data="${C1}Card-$(( $i + 1 ))${C2} ${a_network_working[0]}$driver_data$po$pci_bus_idrt_data"
-			network_data=$( create_print_line " " "$network_data
+			network_data="${C1}Card-$(( $i + 1 ))${C2} ${a_network_working[0]}$driver_data$port_data$pci_bus_id"
+			network_data=$( create_print_line " " "$network_data" )
+			
 			print_screen_output "$network_data"
 			print_network_advanced_data
 		done
