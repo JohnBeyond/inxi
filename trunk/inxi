@@ -4190,6 +4190,9 @@ get_partition_data()
 	}' ) )
 	IFS="$ORIGINAL_IFS"
 	
+	temp_array=${A_PARTITION_DATA[@]}
+	log_function_data "1: A_PARTITION_DATA:\n$temp_array"
+	
 	# now we'll handle some fringe cases where irregular df -hT output shows /dev/disk/.. instead of 
 	# /dev/h|sdxy type data for column 1, . A_PARTITION_DATA[6]n_# Here we just search for the uuid/label and then grab the end of the line to get the right dev item.n_data
 
@@ -4224,12 +4227,11 @@ get_partition_data()
 			fi
 		fi
 	done
-
+	temp_array=${A_PARTITION_DATA[@]}
+	log_function_data "2: A_PARTITION_DATA:\n$temp_array"
 	if [[ $B_SHOW_LABELS == 'true' || $B_SHOW_UUIDS == 'true' ]];then
 		get_partition_data_advanced
 	fi
-	temp_array=${A_PARTITION_DATA[@]}
-	log_function_data "A_PARTITION_DATA: $temp_array"
 	eval $LOGFE
 }
 
@@ -4361,7 +4363,7 @@ get_partition_data_advanced()
 		log_function_data 'cat' "$FILE_MOUNTS"
 	fi
 	temp_array=${A_PARTITION_DATA[@]}
-	log_function_data "A_PARTITION_DATA: $temp_array"
+	log_function_data "3-advanced: A_PARTITION_DATA:\n$temp_array"
 	eval $LOGFE
 }
 
@@ -5926,10 +5928,9 @@ if [[ -n ${a_network_working[4]} && $B_EXTRA_DATA == 'true' ]];then
 			fi
 			pci_bus_id=" ${C1}$bus_usb_text:${C2} $bus_usb_id"
 		fi
-		}"
-		fi
+		
 		card_string=''
-		network_dC1}$card_one${C2} ${a_network_working[0]}$driver_data$port_data$pci_bus_id"
+		network_data="${C1}$card_one${C2} ${a_network_working[0]}$driver_data$port_data$pci_bus_id"
 		network_data=$( create_print_line "Network:" "$network_data" )
 		print_screen_output "$network_data"
 		print_network_advanced_data
