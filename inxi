@@ -1,7 +1,7 @@
 #!/bin/bash
 ########################################################################
 ####  Script Name: inxi
-####  version: 1.5.999
+####  version: 1.6.0
 ####  Date: June 7 2011
 ########################################################################
 ####  SPECIAL THANKS
@@ -1493,7 +1493,7 @@ remove_erroneous_chars()
 get_parameters()
 {
 	eval $LOGFS
-	local opt='' wget_test='' update_flags='U!:' debug_data_type='' b_extra_extra='false'
+	local opt='' wget_test='' update_flags='U!:' debug_data_type='' 
 	local use_short='true' # this is needed to trigger short output, every v/d/F/line trigger sets this false
 
 	# If distro maintainers want to not allow updates, turn off that option for users
@@ -1654,11 +1654,11 @@ get_parameters()
 			V)	print_version_info
 				exit 0
 				;;
-			x)	B_EXTRA_DATA='true'
-				if [[ $b_extra_extra == 'true' ]];then
+			# this will trigger either with xx or with Fx but not with xF
+			x)	if [[ $B_EXTRA_DATA == 'true' ]];then
 					B_EXTRA_EXTRA_DATA='true'
 				fi
-				b_extra_extra='true'
+				B_EXTRA_DATA='true'
 				;;
 			z) B_OUTPUT_FILTER='true'
 				;;
@@ -5912,7 +5912,7 @@ print_info_data()
 		runlvl="$( get_runlevel_data )"
 		if [[ -n $runlvl ]];then2 }' )"
 			info_data="${info_data} ${C1}Runlevel${C2} ${runlvl}${CN}"
-		fi
+		i
 	fi
 
 	if [[ $SHOW_IRC -gt 0 ]];then
@@ -5920,8 +5920,8 @@ print_info_data()
 	fi
 	info_data="${info_data} ${C1}$SCRIPT_NAME${C2} $SCRIPT_VERSION_NUMBER${CN}"
 
-	if [[ $SCHEME -gt 0 ]];then
-data="${info_data} ${NORMAL}"
+	if [[ $SCHEME]];then
+		info_data="${info_data} ${NORMAL}"
 	fi
 	print_screen_output "$info_data"
 	eval $LOGFE
