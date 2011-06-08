@@ -3787,7 +3787,7 @@ get_machine_data()
 					gsub(/'"$BAN_LIST_NORMAL"'/, "", $0)
 					gsub(/,/, " ", $0)
 					sub(/To Be Filled By O.E.M.|Not Available|System manufacturer|System Product Name|System Version|N\/A|OEM|none/, "", $0)
-					sub(/http:\/\/www.abit.co.tw\//, "Abit", $0)
+					sub(/http:\/\/www.abit.com.tw\//, "Abit", $0)
 					gsub(/^ +| +$/, "", $0)
 					gsub(/ [ \t]+/, " ", $0)
 					print $0
@@ -5914,7 +5914,7 @@ print_info_data()
 	if [[ $B_SHOW_X_DATA != 'true' || $B_EXTRA_DATA == 'true' ]];then
 		runlvl="$( get_runlevel_data )"
 		if [[ -n $runlvl ]];then2 }' )"
-			info_data="${info_data} $level${C2} ${runlvl}${CN}"
+			info_data="${info_data} nlevel${C2} ${runlvl}${CN}"
 		fi
 	fi
 	if [[ $SHOW_IRC -gt 0 ]];then
