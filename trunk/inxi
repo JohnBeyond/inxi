@@ -792,7 +792,7 @@ check_script_depends()
 		do
 			app_path=$( type -p $app_name )
 			if [[ -z $app_path ]];then
-				script_debugger "Resuming in non X mode: $app_name not found in path"
+				script_debugger "Resuming in non X mode: $app_name not found in path. Use --recommends for solution"
 				B_SHOW_X_DATA='false'
 				break
 			fi
@@ -5888,8 +5888,8 @@ print_cpu_flags_full()
 	# build the flag line array
 	for flag in $cpu_flags_full
 	do
-		a_cpu_flags[$counter]="${a_cpu_flags[$counter]}$flag "
-		if [[ $i -ge $max_]];then
+		a_cpu_flags[$counter]="${a_cpu_flags[$counteg "
+		if [[ $i -ge $max_length ]];then
 			(( counter++ ))
 			max_length=$(( $max_length + $max_length_add ))
 		fi
