@@ -2,8 +2,8 @@
 ########################################################################
 ####  Script Name: inxi
 ####  version: 1.6.5
-####  Date: June 9 2011
-####  Patch Number: 00
+####  Date: June 10 2011
+####  Patch Number: 01
 ########################################################################
 ####  SPECIAL THANKS
 ########################################################################
@@ -5777,7 +5777,7 @@ print_gfx_data()
 		x_driver="${x_driver} unloaded: $unloaded"
 	fi
 	if [[ -n $failed ]];then
-		x_driver="${x_driver} FAILED: $failed"
+		x_driver="${x_driver} ${RED}FAILED:${C2} $failed"
 	fi
 
 	if [[ ${#A_GRAPHIC_DRIVERS[@]} -gt 1 ]];then
@@ -5917,7 +5917,8 @@ print_hard_disk_data()
 				else
 					usb_data=''
 				fi
-				dev_data="/dev/${a_hdd_working[			size_data=" ${a_hdd_working[1]}"
+				dev_data="/dev/${a_king[0]} "
+				size_data=" ${a_hdd_working[1]}"
 				if [[ $B_EXTRA_DATA == 'true' && -n $dev_data ]];then
 					hdd_temp_data=$( get_hdd_temp_data "$dev_data" )
 					# error handling is done in get data function
