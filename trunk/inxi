@@ -1855,7 +1855,8 @@ show_options()
 	print_screen_output "-C  Show full CPU output, including per CPU clockspeed."
 	print_screen_output "-D  Show full hard Disk info, not only model, ie: /dev/sda ST380817AS 80.0GB."
 	print_screen_output "-f  Show all cpu flags used, not just the short list. Not shown with -F to avoid spamming."
-	print_screen_output "-F  Show Full output for $SCRIPT_NAME. Does not show extra verbose options like -f -u -l -o -p -t"
+	print_screen_output "-F  Show Full output for $SCRIPT_NAME. Shows all Upper case lines, plus -s and -n."
+	print_screen_output "    Does not show extra verbose options like -f -u -l -o -p -t -r"
 	print_screen_output "-G  Show Graphic card information (card, x type, resolution, glx renderer, version)."
 	print_screen_output "-i  Show Wan IP address, and shows local interfaces (requires ifconfig network tool). Same as -Nni"
 	print_screen_output "    Not shown with -F for user security reasons, you shouldn't paste your local/wan IP."
@@ -5918,8 +5919,8 @@ print_hard_disk_data()
 				fi
 				dev_data="/dev/${a_hdd_working[0]} "
 				size_data=" ${a_hdd_working[1]}"
-				if [[ $B_EXTRA_DATA == 'true' && -n $dev_data ]];then
-					hdd_temp_data_hdd_temp_data "$dev_data" )
+		 $B_EXTRA_DATA == 'true' && -n $dev_data ]];then
+					hdd_temp_data=$( get_hdd_temp_data "$dev_data" )
 					# error handling is done in get data function
 					if [[ -n $hdd_temp_data ]];then
 						hdd_temp_data=" ${hdd_temp_data}C"
