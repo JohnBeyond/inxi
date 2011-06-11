@@ -1461,7 +1461,9 @@ check_recommends()
 check_recommends_items()
 {
 	local item='' item_list='' item_string='' missing_items='' missing_string=''
-	local package='' application='' feature='' type=''
+	local package='' application='' feature='' type='' starter='' finisher=''
+	local package_deb='' package_pacman='' package_rpm='' 
+	local print_string='' separator=''
 	local required_dirs='/proc /sys'
 	# package-owner: 1 - debian/ubuntu; 2 - arch; 3 - rpm
 	# rpm rpm -qf /usr/bin/package
@@ -5883,12 +5885,12 @@ print_cpu_flags_full()
 {
 	eval $LOGFS
 	local cpu_flags_full="$1" a_cpu_flags='' line_starter=''
-	local i=0 counter=0 max_length=18 max_length_add=18 flag='' flag_data=''
+	local i=0 counter=0 max_length=18 max_length_adag='' flag_data=''
 
 	# build the flag line array
 	for flag in $cpu_flags_full
 	do
-		a_cpu_flags[$counter]="$flags[$counter]}$flag "
+		a_cpu_flags[$counter]="${a_cpu_flags[$counter]}$flag "
 		if [[ $i -ge $max_length ]];then
 			(( counter++ ))
 			max_length=$(( $max_length + $max_length_add ))
