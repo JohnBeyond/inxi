@@ -61,7 +61,7 @@
 ####
 ####  RECOMMENDS (Needed to run certain features, listed by option)
 ####  -A - for output of usb audio information: lsusb (usbutils)
-####  -Ax - for audio module version: modinfo (module-init-tools)
+####  -Ax -Nx - for audio/network module version: modinfo (module-init-tools)
 ####  -Dx - for hdd temp output (root only default): hddtemp (hddtemp)
 ####       For user level hdd temp output: sudo (sudo)
 ####       Note: requires user action for this feature to run as user (edit /etc/sudoers file)
@@ -1496,7 +1496,7 @@ check_recommends_items()
 	ifconfig:net-tools~net-tools~?~:-i_ip_lan
 	sensors:lm-sensors~lm_sensors~?~:-s_sensors_output
 	lsusb:usbutils~usbutils~?~:-A_usb_audio;-N_usb_networking 
-	modinfo:module-init-tools~module-init-tools~?~:-Ax_module_version 
+	modinfo:module-init-tools~module-init-tools~?~:-Ax,-Nx_module_version 
 	runlevel:sysvinit~sysvinit~?~:-I_runlevel
 	sudo:sudo~sudo~sudo~:-Dx_hddtemp-user;-o_file-user
 	'
@@ -5884,7 +5884,7 @@ print_cpu_data()
 print_cpu_flags_full()
 {
 	eval $LOGFS
-	local cpu_flags_full="$1" a_cpu_flags='' line_st'
+	local cpu_flags_full="$1" a_cpu_' line_starter=''
 	local i=0 counter=0 max_length=18 max_length_add=18 flag='' flag_data=''
 
 	# build the flag line array
