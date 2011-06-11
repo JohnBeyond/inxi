@@ -1077,7 +1077,7 @@ error_handler()
 			;;
 		4)	error_message="unsupported verbosity level: $2"
 			;;
-		5)	error_message="dependency not met: $2 not found in path"
+		5)	error_message="dependency not met: $2 not found in path.\nFor distribution installation package names and missing apps information, run: $SCRIPT_NAME --recommends"
 			;;
 		6)	error_message="/proc not found! Quitting..."
 			;;
@@ -5874,8 +5874,8 @@ print_cpu_data()
 			# if this had some other purpose which we can't remember we'll add it back in
 			#if [[ $i -gt 10 ]];then
 			#	break
-			#eak
-			fi
+			#fi
+		done
 		if [[ -n $cpu_multi_clock_data ]];then
 			cpu_multi_clock_data=$( create_print_line " " "${C1}Clock Speeds:${C2}$cpu_multi_clock_data" )
 			print_screen_output "$cpu_multi_clock_data"
