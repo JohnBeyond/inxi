@@ -3,7 +3,7 @@
 ####  Script Name: inxi
 ####  version: 1.7.0
 ####  Date: June 17 2011
-####  Patch Number: 04
+####  Patch Number: 05
 ########################################################################
 ####  SPECIAL THANKS
 ########################################################################
@@ -4515,6 +4515,7 @@ get_optical_drive_data()
 		do
 			disk=$( readlink $linked 2>/dev/null )
 			if [[ -n $disk ]] && [[ -z $dev_disks_real || -z $( grep $disk <<< $dev_disks_real ) ]];then
+				disk=$( basename $disk ) # puppy shows this as /dev/sr0, not sr0
 				# need line break IFS for below, no white space
 				dev_disks_real="$dev_disks_real$separator$disk"
 				separator=$'\n'
@@ -5921,8 +5922,9 @@ print_audio_data()
 			elif [[ -n ${a_audio_working[1]} && $B_EXTRA_DATA == 'true' ]];then
 				module_version=$( print_module_version "${a_audio_working[1]}" 'audio'ng[3]}" )
 			fi
-			# we're testing for the presence of the 2nd array item here, which is the driver name
-			if [[ -n ${a_audio_working[1]} ]];thensa_driver=" ${C1}driver${C2} ${a_audio_working[1]}"
+			# we're testing for the presence of the 2nd array item herh is the driver name
+			if [[ -n ${a_audio_working[1]} ]];then
+				alsa_driver=" ${C1}driver${C2} ${a_audio_working[1]}"
 			fi
 			if [[ -n ${a_audio_working[2]} && $B_EXTRA_DATA == 'true' ]];then
 				if [[ $( wc -w <<< ${a_audio_working[2]} ) -gt 1 ]];then
