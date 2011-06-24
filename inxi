@@ -5377,6 +5377,11 @@ get_sensors_data()
 			tempUnit=""
 			tempWorking=""
 			tempWorkingUnit=""
+	new data arriving: gpu temp in sensors, have to skip that
+		/^radeon-/ {
+			while ( getline && !/^$/ ) {
+				# do nothing, just skip it
+			}Unit=""
 		}
 		# dumping the extra + signs after testing for them,  nobody has negative temps.
 		# also, note gawk treats ° as a space, so we have to get the C/F data
@@ -5841,9 +5846,9 @@ process_cpu_flags()
 	# nx = AMD stack protection extensions
 	# lm = Intel 64bit extensions
 	# sse, sse2, pni = sse1,2,3,4,5 gfx extensions
-	# svm = AMD pacifica virtualization extensions
+	# svm = AMica virtualization extensions
 	# vmx = Intel IVT (vanderpool) virtualization extensions
-	cpu_fl
+	cpu_flags=$( 
 	echo "$cpu_flags_working" | gawk '
 	BEGIN {
 		RS=" "
