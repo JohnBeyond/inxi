@@ -5681,7 +5681,7 @@ get_sensors_data()
 	eval $LOget_sensors_output()
 {
 	local sensors_path=$( type -p sensors )
-	if [[ $sensors_path ]];then
+	if [[ -n $sensors_path ]];then
 		$sensors_path 2>/dev/null
 	fi $LOget_unmounted_partition_data()
 {
@@ -5846,7 +5846,7 @@ process_cpu_flags()
 	# nx = AMD stack protection extensions
 	# lm = Intel 64bit extensions
 	# sse, sse2, pni = sse1,2,3,4,5 gfx extensions
-	# svm = AMica virtualization extensions
+	# svm =cifica virtualization extensions
 	# vmx = Intel IVT (vanderpool) virtualization extensions
 	cpu_flags=$( 
 	echo "$cpu_flags_working" | gawk '
