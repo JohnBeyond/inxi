@@ -1404,6 +1404,7 @@ debug_data_collector()
 			if [[ $B_UPLOAD_DEBUG_DATA == 'true' ]];then
 				if [[ $b_run_xiin == 'true' ]];then
 					echo 'Running automatic upload of data to remote server ftp.techpatterns.com/incoming now...'
+                                        python ./$xiin_file --version
 					python ./$xiin_file -u $completed_gz_file ftp.techpatterns.com/incoming
 					if [[ $? -gt 0 ]];then
 						echo "Error: looks like the ftp upload failed. Error number: $?"
@@ -5839,9 +5840,9 @@ calculate_multicore_data()
 			print total
 		}' )
 	elif [[ $string_number == '' ]];then
-		string_number='Not Available'
+		number='Not Available'
 	else
-		# I believe that the aturns 'unknown' by default so no need for extra text
+		# I believe that the above returns 'unknown' by default so no need for extra text
 		string_number="$string_number "
 	fi
 	echo "$string_number$string_data"
