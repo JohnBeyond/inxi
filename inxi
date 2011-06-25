@@ -3,7 +3,7 @@
 ####  Script Name: inxi
 ####  version: 1.7.12
 ####  Date: June 24 2011
-####  Patch Number: 01
+####  Patch Number: 02
 ########################################################################
 ####  SPECIAL THANKS
 ########################################################################
@@ -5688,10 +5688,15 @@ get_sensors_data()
 # 	echo "A_SENSORS_DATA: ${A_SENSORS_DATA[@]}"
 	eval $LOget_sensors_output()
 {
-	local sensors_path=$( type -p sensors )
+	local sensors_path=$( type -p sensors ) sensors_data=''
+	
 	if [[ -n $sensors_path ]];then
-		$sensors_path 2>/dev/null
-	fi $LOget_unmounted_partition_data()
+		sensors_data="$( $sensors_path 2>/dev/null )"
+		if [[ -n "$sensors_data" ]];then
+			sensors_data="$sensors_data\n\n" # make sure the file ends in newlines
+		fi
+	fi
+	echo -e "$sensors_data" $LOget_unmounted_partition_data()
 {
 	eval $LOGFS
 	local a_unmounted_working='' mounted_partitions='' separator='' unmounted_fs=''
@@ -5836,11 +5841,11 @@ calculate_multicore_data()
 	elif [[ $string_number == '' ]];then
 		string_number='Not Available'
 	else
-		# I believe that the above returns 'unknown' by default so no need for extra text
+		# I believe that the aturns 'unknown' by default so no need for extra text
 		string_number="$string_number "
 	fi
 	echo "$string_number$string_data"
-	log_function_data "string_numberstring_datang_number$string_data"
+	log_function_data "string_numberstring_data: $string_number$string_data"
 	eval $LOGFE
 }
 
