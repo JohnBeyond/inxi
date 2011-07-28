@@ -3413,7 +3413,7 @@ get_distro_data()
 		fi
 		## finally, if all else has failed, give up
 		if [[ -z $distro ]];then
-			distro='Unknown distro'
+			distro='unknown'
 		fi
 	fi
 
