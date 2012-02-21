@@ -1,8 +1,8 @@
 #!/bin/bash
 ########################################################################
 ####  Script Name: inxi
-####  version: 1.7.29
-####  Date: February 9 2012
+####  version: 1.7.30
+####  Date: February 21 2012
 ####  Patch Number: 00
 ########################################################################
 ####  SPECIAL THANKS
@@ -3028,6 +3028,7 @@ get_cpu_ht_multicore_smp_data()
 			num_of_cores = 0
 			num_of_processors = 0
 			num_of_cpus = 0
+			cpu_core_count = 0
 			core_id[0]
 			processor_id[0]
 			cpu_id[0]
@@ -3047,6 +3048,12 @@ get_cpu_ht_multicore_smp_data()
 			core_id[iter] = $NF
 			iter++
 		}
+		# this will be used to fix an intel glitch if needed, cause, intel
+		# sometimes reports core id as the same number for each core, 0
+		# so if cpu cores shows greater value than number of cores, use this
+		/^cpu cores/ {
+			cpu_core_count = $NF
+		}
 		END {
 			## 	Look thru the array and filter same numbers.
 			##	only unique numbers required
@@ -3055,10 +3062,11 @@ get_cpu_ht_multicore_smp_data()
 			
 			i = 0
 			## count unique processors ##
+			# note, this fails for intel cpus at times
 			for ( i in processor_id ) {
 				procHolder[processor_id[i]] = 1
 			}
-			for ( i in procHolder ) {				
+			for ( i in procHolder ) {
 				num_of_processors++
 			}
 			
@@ -3078,6 +3086,9 @@ get_cpu_ht_multicore_smp_data()
 			}
 			for ( i in coreHolder ) {				
 				num_of_cores++
+			}
+			if ( ( num_of_cores == 1 ) && ( cpu_core_count * num_of_cpus > 1 ) ) {
+				num_of_cores = cpu_core_count * num_of_cpus
 			}
 			
 			####################################################################
@@ -5806,20 +5817,23 @@ get_sensors_data()
 				if ( fanMainString == "" ) {
 					fanMainString=","
 				}
-				print fanMainString
-				print fanDefaultString
-	' <<< "$Sensors_Data"		}
-		'
+				print fanMainStr	print fanDefaultString
+			}
+		}' <<< "$Sensors_Data"
 		) )
 	# the error case needs to go here because we are setting special array delimiter ','
 	else
 		A_SENSORS_DATA=( "You do not have the sensors app installed." )
 	fi
 	
-	IFS="$ORIGINALtemp_array=${A_SENSORS_DATA[@]}
-	log_function_data "A_SENSORS_DATA: $temp_arrayATA[@]}"
+	IFS="$ORIGINAL_IFS"
+	temp_array=${A_SENSORS_DATA[@]}
+	log_function_data "A_SENSORS_DATA: $temp_array"
 # 	echo "A_SENSORS_DATA: ${A_SENSORS_DATA[@]}"
-	eval $LOget_sensors_output()
+	eval $LOGFE
+}
+
+get_sensors_output()
 {
 	local sensors_path=$( type -p sensors ) sensors_data=''
 	
