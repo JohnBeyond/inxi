@@ -1,8 +1,8 @@
 #!/bin/bash
 ########################################################################
 ####  Script Name: inxi
-####  version: 1.7.31
-####  Date: March 26 2012
+####  version: 1.7.32
+####  Date: April 16 2012
 ####  Patch Number: 00
 ########################################################################
 ####  SPECIAL THANKS
@@ -412,6 +412,9 @@ SCRIPT_DOWNLOAD_BRANCH_2='http://inxi.googlecode.com/svn/branches/two/'
 SCRIPT_DOWNLOAD_BRANCH_3='http://inxi.googlecode.com/svn/branches/three/'
 SCRIPT_DOWNLOAD_BRANCH_4='http://inxi.googlecode.com/svn/branches/four/'
 SCRIPT_DOWNLOAD_DEV='http://smxi.org/test/'
+# note, you can use any ip url here as long as it's the only line on the output page.
+# Also the ip address must be the last thing on that line.
+WAN_IP_URL='http://smxi.org/opt/ip.php'
 KONVI_CFG="konversation/scripts/$SCRIPT_NAME.conf" # relative path to $(kde-config --path data)
 
 ### Script Localization
@@ -4692,10 +4695,12 @@ get_networking_wan_ip_data()
 	eval $LOGFS
 	local ip=''
 
-	# get ip using wget redirect to stdout. This is a clean, text only IP output url.
-	ip=$( wget -q -O - http://smxi.org/opt/ip.php | gawk -F 'is: ' '{
+	# get ip using wget redirect to stdout. This is a clean, text only IP output url,
+	# single line only, ending in the ip address. May have to modify this in the future
+	# to handle ipv4 and ipv6 addresses but should not be necessary.
+	ip=$( wget -q -O - $WAN_IP_URL | gawk '{
 		#gsub("\n","",$2")
-		print $2
+		print $NF
 	}' )
 
 	if [[ -z $ip ]];then
@@ -5806,17 +5811,17 @@ get_sensors_data()
 			}
 			
 			# clear out any duplicates. Primary fan real trumps fan working always if same speed
-			for (i = 1; i <= indexCountaFanMain; i++) {
+			for (i == indexCountaFanMain; i++) {
 				if ( i in aFanMain && aFanMain[i] != "" && aFanMain[i] != 0 ) {
 					for (j = 1; j <= indexCountaFanDefault; j++) {
 						if ( j in aFanDefault && aFanMain[i] == aFanDefault[j] ) {
 							aFanDefault[j] = ""
 						}
-						
+					}
 				}
 			}
 
-			# now see if you can find the fast mobo fan, > 5000 rpm and put it as mobo
+			# now see if you can find the fast little mobo fan, > 5000 rpm and put it as mobo
 			# note that gawk is returning true for some test cases when aFanDefault[j] < 5000
 			# which has to be a gawk bug, unless there is something really weird with arrays
 			# note: 500 > aFanDefault[j] < 1000 is the exact trigger, and if you manually 
