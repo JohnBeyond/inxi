@@ -3,7 +3,7 @@
 ####  Script Name: inxi
 ####  version: 1.7.34
 ####  Date: April 26 2012
-####  Patch Number: 01
+####  Patch Number: 02
 ########################################################################
 ####  SPECIAL THANKS
 ########################################################################
@@ -2585,8 +2585,8 @@ is_this_qt4_konvi()
 	if [[ $B_QDBUS == 'true' ]];then
 		konvi_dbus_exist=$( qdbus 2>/dev/null | grep "org.kde.konversation" )
 	fi
-	 
-	if [[ -n $konvi_dbus_exist && -e /usr/share/kde4/apps/konversation ]]; then
+	# sabayon uses /usr/share/apps/konversation as path
+	if [[ -n $konvi_dbus_exist ]] && [[ -e /usr/share/kde4/apps/konversation || -e  /usr/share/apps/konversation ]]; then
 		konvi_pid=$( ps -A | grep -i 'konversation' )
 		konvi_pid=$( echo $konvi_pid | gawk '{ print $1 }' ) 
 		konvi_home_dir=$( readlink /proc/$konvi_pid/exe )
@@ -5796,11 +5796,11 @@ get_sensors_data()
 			if ( aFanMain[1] == "" ) {
 				# note, you cannot test for aFanDefault[1] or [2] != "" 
 				# because that creates an array item in gawk just by the test itself
-				if ( tempFanType == 1 && 1 in aFanDefault ) {
+				if ( tempFanType& 1 in aFanDefault ) {
 					aFanMain[1]=aFanDefault[1]
 					aFanDefault[1]=""
 				}
-	 if ( tempFanType == 2 && 2 in aFanDefault ) {
+				else if ( tempFanType == 2 && 2 in aFanDefault ) {
 					aFanMain[1]=aFanDefault[2]
 					aFanDefault[2]=""
 				}
