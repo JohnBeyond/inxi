@@ -1253,6 +1253,7 @@ script_self_updater()
 {
 	eval $LOGFS
 	local wget_error=0 file_contents='' wget_man_error=0 
+	local man_file_path="$MAN_FILE_LOCATION/inxi.8.gz"
 
 	print_screen_output "Starting $SCRIPT_NAME self updater."
 	print_screen_output "Currently running $SCRIPT_NAME version number: $SCRIPT_VERSION_NUMBER"
@@ -1282,7 +1283,7 @@ script_self_updater()
 					if [[ $wget_man_error -eq 0 ]];then
 						print_screen_output "Man file download URL verified: $MAN_FILE_DOWNLOAD"
 						print_screen_output "Downloading Man page file now."
-						wget -O $MAN_FILE_LOCATION/inxi.8.gz $MAN_FILE_DOWNLOAD || wget_man_error=$?
+						wget -O $man_file_path $MAN_FILE_DOWNLOAD || wget_man_error=$?
 						if [[ $wget_man_error -gt 0 ]];then
 							print_screen_output "Oh no! Something went wrong downloading the Man gz file at: $MAN_FILE_DOWNLOAD"
 							print_screen_output "Check the error messages for what happened. Error: $wget_man_error"
@@ -5753,8 +5754,8 @@ onstruct the string for the print function to work with, file name: data
 				repoTitle=""
 	Data=""
 			}
-			# this is a hack, assuming that each item has these fields listed, we collect the 3
-			# items one by oe by one, then when the url/enabled fields are set, we print it out and
+			# this is a hack, assuming that each item has these fields listedlisted, we collect the 3
+			# items one by one, then when the url/enabled fields are set, we print it out and
 			# reset the data. Not elegant but it works. Note that if enabled was not present
 			# we assume it is enabled then, and print the line, reset the variables. This will
 			# miss the last item, so it is printed if found in END
