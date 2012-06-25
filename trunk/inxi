@@ -1,8 +1,8 @@
 #!/bin/bash
 ########################################################################
 ####  Script Name: inxi
-####  version: 1.8.9
-####  Date: June 24 2012
+####  version: 1.8.10
+####  Date: June 25 2012
 ####  Patch Number: 00
 ########################################################################
 ####  SPECIAL THANKS
@@ -414,6 +414,7 @@ ALTERNATE_FTP='' # for data uploads
 LOG_FILE="$SCRIPT_DATA_DIR/inxi.log"
 LOG_FILE_1="$SCRIPT_DATA_DIR/inxi.1.log"
 LOG_FILE_2="$SCRIPT_DATA_DIR/inxi.2.log"
+MAN_FILE_DOWNLOAD='http://inxi.googlecode.com/svn/trunk/inxi.8.gz'
 SCRIPT_NAME="inxi"
 SCRIPT_PATCH_NUMBER=''
 SCRIPT_PATH=""			#filled-in in Main
@@ -1250,7 +1251,8 @@ create_rotate_logfiles()
 script_self_updater()
 {
 	eval $LOGFS
-	local wget_error=0 file_contents=''
+	local wget_error=0 file_contents='' wget_man_error=0 
+	local man_location='/usr/share/man/man8'
 	print_screen_output "Starting $SCRIPT_NAME self updater."
 	print_screen_output "Currently running $SCRIPT_NAME version number: $SCRIPT_VERSION_NUMBER"
 	print_screen_output "Current version patch number: $SCRIPT_PATCH_NUMBER"
@@ -1268,6 +1270,32 @@ script_self_updater()
 			print_screen_output "Successfully updated to $2 version: $SCRIPT_VERSION_NUMBER"
 			print_screen_output "New $2 version patch number: $SCRIPT_PATCH_NUMBER"
 			print_screen_output "To run the new version, just start $SCRIPT_NAME again."
+			print_screen_output "----------------------------------------"
+			print_screen_output "Starting download of man page file now."
+			if [[ ! -d $man_location ]];then
+				print_screen_output "The required man directory was not detected on your system, unable to continue: $man_location"
+			else
+				if [[ $B_ROOT == 'true' ]];then
+					print_screen_output "Checking Man page download URL..."
+					wget -q --spider $MAN_FILE_DOWNLOAD || wget_man_error=$?
+					if [[ $wget_man_error -eq 0 ]];then
+						print_screen_output "Man file download URL verified: $MAN_FILE_DOWNLOAD"
+						print_screen_output "Downloading Man page file now."
+						wget -O $man_location $MAN_FILE_DOWNLOAD || wget_man_error=$?
+						if [[ $wget_man_error -gt 0 ]];then
+							print_screen_output "Oh no! Something went wrong downloading the Man gz file at: $MAN_FILE_DOWNLOAD"
+							print_screen_output "Check the error messages for what happened."
+						else
+							print_screen_output " Download/install of man page successful. Check to make sure it works: man inxi"
+						fi
+					else
+						print_screen_output "Man file download URL failed, unable to continue: $MAN_FILE_DOWNLOAD"
+					fi
+				else
+					print_screen_output "Updating / Installing the Man page requires root user, writing to: $man_location"
+					print_screen_output "If you want the man page, you'll have to run $SCRIPT_NAME -U as root."
+				fi
+			fi
 			exit 0
 		else
 			error_handler 16
@@ -2249,8 +2277,8 @@ show_options()
 	print_screen_output "--recommends   Checks $SCRIPT_NAME application dependencies + recommends, and directories, then shows"
 	print_screen_output "               what package(s) you need to install to add support for that feature."
 	if [[ $B_ALLOW_UPDATE == 'true' ]];then
-		print_screen_output "-U             Auto-update script. Note: if you installed as root, you"
-		print_screen_output "               must be root to update, otherwise user is fine."
+		print_screen_output "-U             Auto-update script. Will also install/update man page. Note: if you installed as root, you"
+		print_screen_output "               must be root to update, otherwise user is fine. Man page installs require root user mode."
 	fi
 	print_screen_output "-V --version   $SCRIPT_NAME version information. Prints information then exits."
 	print_screen_output " "
@@ -5725,9 +5753,8 @@ onstruct the string for the print function to work with, file name: data
 	Data=""
 			}
 			# this is a hack, assuming that each item has these fields listed, we collect the 3
-			# items one by one, then when the url/enabled fields are set, we print it out and
-			# reset the data. Not elegant but it works.
-			/^ Note that if enabled was not present
+			# items one by one, then when the url/enabled fields are set, we priwe print it out and
+			# reset the data. Not elegant but it works. Note that if enabled was not present
 			# we assume it is enabled then, and print the line, reset the variables. This will
 			# miss the last item, so it is printed if found in END
 			/^\[.+\]/ {
@@ -5736,7 +5763,8 @@ onstruct the string for the print function to work with, file name: data
 					enabledStatus=""
 					urlData=""
 					repoTitle=""
-				}sub( /\[|\]/, "", $1 ) # strip out the brackets
+				}
+				gsub( /\[|\]/, "", $1 ) # strip out the brackets
 				repoTitle = $1 " ~ "
 			}
 			/^(mirrorlist|baseurl)/ {
@@ -5746,12 +5774,11 @@ onstruct the string for the print function to work with, file name: data
 			/^enabled=/ {
 				enabledStatus = $1
 			}
-			
-			{ # print out the line if all 3 values are found, otherwise if a new
+			# print out the line if all 3 values are found, otherwise if a new
 			# repoTitle is hit above, it will print out the line there instead
-				if ( urlData != "" && enabledStatus != "" ){
-			&& repoTitle ){
-					# consif ( enabledStatus !~ /enabled=0/ ){
+			{ 
+				if ( urlData != "" && enabledStatus != "" && repoTitle != "" ){
+					if ( enabledStatus !~ /enabled=0/ ){
 						print_line( repoFile, repoTitle, urlData )
 					}
 					enabledStatus=""
@@ -5763,8 +5790,9 @@ onstruct the string for the print function to work with, file name: data
 				# print the last one if there is data for it
 				if ( urlData != ""  && repoTitle != "" ){
 					print_line( repoFile, repoTitle, urlData )
+				}
 			}
-			' $yum_repo_dir$repo_file )"
+			' $repo_file )"
 			
 			# then load the global for each file as it gets filled
 			if [[ -n $repo_data_working ]];then
@@ -5777,7 +5805,9 @@ $repo_data_working"
 				repo_data_working=''
 			fi
 		done
-		REPO_FILE_ID='yum r# pisi - pardus relif [[ -d $pisi_dir && -n $( type -p pisi ) ]];then
+		REPO_FILE_ID='yum repos'
+	# pisi - pardus
+	elif [[ -d $pisi_dir && -n $( type -p pisi ) ]];then
 		REPO_DATA="$( pisi list-repo )"
 		# now we need to create the structure: repo info: repo path
 		# we do that by looping through the lines of the output and then
