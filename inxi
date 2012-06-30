@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/system/xbin/bash
 ########################################################################
 ####  Script Name: inxi
 ####  version: 1.8.11
@@ -2719,11 +2719,12 @@ get_cmdline()
 		fi
 	fi
 	CMDL_MAX=$i
-	log_function_data "CMDL_MAX: $CMDL_MAXe_value"
+	log_function_data "CMDL_MAX: $CMDL_MAX"
 	eval $LOGFE
 }
 
-#### ------------------------------------------------------------------get data types
+#### -------------------------------------------------------------------
+#### get data types
 #### -------------------------------------------------------------------
 ## create array of sound cards installed on system, and if found, use asound data as well
 get_audio_data()
@@ -5265,12 +5266,12 @@ get_partition_data()
 	log_function_data "1: A_PARTITION_DATA:\n$temp_array"
 	
 	# now we'll handle some fringe cases where irregular df -hT output shows /dev/disk/.. instead of 
-	# /dev/h|sdxy type data for column 1, . A_PARTITION_DATA[6]n_# Here we just search for the uuid/label and then grab the end of the line to get the right dev item.n_data
-
+	# /dev/h|sdxy type data for column 1, . A_PARTITION_DATA[6]
+	# Here we just search for the uuid/label and then grab the end of the line to get the right dev item.
 	for (( i=0; i < ${#A_PARTITION_DATA[@]}; i++ ))
 	do
 		IFS=","
-		a_partition_wo ${A_PARTITION_DATA[i]} )
+		a_partition_working=( ${A_PARTITION_DATA[i]} )
 		IFS="$ORIGINAL_IFS"
 		dev_item='' # reset each loop
 		# note: for swap this will already be set
@@ -5744,17 +5745,18 @@ get_repo_data()
 		for repo_file in $( ls $yum_repo_dir*.repo $yum_conf 2>/dev/null )
 		do
 			repo_data_working="$( gawk -v repoFile=$repo_file '
-onstruct the string for the print function to work with, file name: data
-					# dofunction print_line( fileName, repoId, repoUrl ){
+			# construct the string for the print function to work with, file name: data
+			function print_line( fileName, repoId, repoUrl ){
 				print fileName ":" repoId repoUrl
-			}GIN {
-			FS="\n	FS="\n"
+			}
+			BEGIN {
+				FS="\n"
 				IGNORECASE=1
 				enabledStatus=""
 				repoTitle=""
-	Data=""
+				urlData=""
 			}
-			# this is a hack, assuming that each item has these fields lisds listed, we collect the 3
+			# this is a hack, assuming that each item has these fields listed, we collect the 3
 			# items one by one, then when the url/enabled fields are set, we print it out and
 			# reset the data. Not elegant but it works. Note that if enabled was not present
 			# we assume it is enabled then, and print the line, reset the variables. This will
